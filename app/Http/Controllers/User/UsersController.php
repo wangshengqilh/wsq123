@@ -10,65 +10,66 @@ class UsersController extends Controller{
         $pass1=$request->input('pass1');
         $pass2=$request->input('pass2');
         $email=$request->input('email');
-        if(empty($name)){
-            return json_encode(['code'=>1,'msg'=>'用户不能为空']);
-        }
-        if(empty($pass1)){
-            return json_encode(['code'=>1,'msg'=>'密码不能为空']);
-        }
-        if(empty($pass2)){
-            return json_encode(['code'=>1,'msg'=>'确认密码不能为空']);
-        }
-        if(empty($email)){
-            return json_encode(['code'=>1,'msg'=>'邮箱不能为空']);
-        }
-        if($pass1!=$pass2){
-            return json_encode(['code'=>1,'msg'=>'密码不一致']);
-        }
-        $na=UserModel::where('nick_name',$name)->first();
-        if($na){
-            return json_encode(['code'=>1,'msg'=>'已经有此用户']);
-        }
-        $u=[
-            'nick_name'=>$name,
-            'pass'=>$pass1,
+        $data=[
+            'name'=>$name,
+            'pass1'=>$pass1,
+            'pass2'=>$pass2,
             'email'=>$email
         ];
-        $add=UserModel::insert($u);
-        if($add){
-            return json_encode(['code'=>0,'msg'=>'注册成功']);
-        }else{
-            return json_encode(['code'=>1,'msg'=>'注册失败']);
+        $data=json_encode($data,256);
+        $url='http://wsq1.96myshop.cn/reg';
+        //初始化URL
+        $ch = curl_init();
+        //设置抓取的url
+        curl_setopt($ch, CURLOPT_URL, $url);
+        //设置post方式提交
+        curl_setopt($ch, CURLOPT_POST, 1);
+        //传值
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        //返回结果不输入
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        //响应头
+        curl_setopt($ch,CURLOPT_HTTPHEADER,['Content-type:text/plain']);
+        //获取抛出错误
+        $num=curl_errno($ch);
+        if($num>0){
+            echo 'curl错误码：'.$num;exit;
         }
+        //发起请求
+        curl_exec($ch);
+        //关闭并释放资源
+        curl_close($ch);
     }
     public function login(Request $request){
         $name=$request->input('name');
         $pass=$request->input('pass');
-        if(empty($name)){
-            return json_encode(['code'=>1,'msg'=>'请填写用户名']);
+        $data=[
+          'name'=>$name,
+          'pass'=>$pass
+        ];
+        $data=json_encode($data,256);
+        $url='http://wsq1.96myshop.cn/login';
+        //初始化URL
+        $ch = curl_init();
+        //设置抓取的url
+        curl_setopt($ch, CURLOPT_URL, $url);
+        //设置post方式提交
+        curl_setopt($ch, CURLOPT_POST, 1);
+        //传值
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        //返回结果不输入
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        //响应头
+        curl_setopt($ch,CURLOPT_HTTPHEADER,['Content-type:text/plain']);
+        //获取抛出错误
+        $num=curl_errno($ch);
+        if($num>0){
+            echo 'curl错误码：'.$num;exit;
         }
-        if(empty($pass)){
-            return json_encode(['code'=>1,'msg'=>'请填写密码']);
-        }
-        $na=UserModel::where('nick_name',$name)->first();
-        $uid=$na['uid'];
-        if($na){
-            if($pass==$na['pass']){
-                $token = substr(md5(time().mt_rand(1,99999)),10,10);
-                $redis_key = 'logs';
-                $redis_keys='ui';
-                Redis::set($redis_keys,$uid);
-                Redis::expire($redis_keys,604800);
-                Redis::set($redis_key,$token);
-                Redis::expire($redis_key, 604800);
-                $a=Redis::get($redis_key);
-                return json_encode(['code'=>0,'msg'=>'登录成功','token'=>'123','uid'=>'123']);
-            }else{
-                return json_encode(['code'=>1,'msg'=>'密码不对']);
-            }
-        }else{
-            return json_encode(['code'=>1,'msg'=>'没有此用户']);
-        }
+        //发起请求
+        curl_exec($ch);
+        //关闭并释放资源
+        curl_close($ch);
     }
 
     public function center(){
