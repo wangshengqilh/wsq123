@@ -75,5 +75,7 @@ class UsersController extends Controller{
     public function center(){
         $token=$_GET('token');
         $uid=$_GET('uid');
+        $na=UserModel::where('uid',$uid)->first();
+        return json_encode(['code'=>0,'msg'=>'查询成功','shuju'=>$na]);
     }
 }
