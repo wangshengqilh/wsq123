@@ -73,9 +73,8 @@ class UsersController extends Controller{
     }
 
     public function center(){
-        echo  111;die;
-        $token=$_GET('token');
-        $uid=$_GET('uid');
+        $token=$_GET['token'];
+        $uid=$_GET['uid'];
         $na=UserModel::where('uid',$uid)->first();
         $json_ns=json_encode($na);
         return $json_ns;

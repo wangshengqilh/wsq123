@@ -23,6 +23,13 @@ class Token
 //        $uid=$request->input('uid');
         $to=$_GET['token'];
         $uid=$_GET['uid'];
+//        if(isset($token) || isset($ui)){
+//            $response = [
+//                'code' => 1110,
+//                'msg' => '参数不完整'
+//            ];
+//            return json_encode($response,256);
+//        }
         if($to!=$token || $uid!=$ui){
             $response = [
                 'code' => 1111,

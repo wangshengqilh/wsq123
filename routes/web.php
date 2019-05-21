@@ -28,7 +28,13 @@ $router->options('login', function () use ($router) {
 $router->post('login','User\UsersController@login');
 //$router->post('center','User\UsersController@center')->middleware('token');
 
-$router->get('center', ['middleware' => 'token', function () {
-    //
-    'UsersController@center';
-}]);
+$router->group(['middleware' => 'token'], function () use ($router) {
+    $router->get('/center','User\UsersController@center' );
+});
+$router->post('goods','Goods\GoodsController@goods');
+$router->post('goodsall','Goods\GoodsController@goodsall');
+$router->post('addcart','Cart\CartController@addcart');
+$router->post('cartshow','Cart\CartController@cartshow');
+$router->post('order','Cart\CartController@order');
+$router->post('ordershow','Cart\CartController@ordershow');
+$router->post('pay','Cart\AlipayController@pay');
